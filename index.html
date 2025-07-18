@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <style>
-    html, body { margin: 0; padding: 0; overflow: hidden; }
+    html, body { margin: 0; padding: 0; overflow: hidden; background: #000; }
   </style>
 </head>
 <body>
@@ -26,49 +26,75 @@
     <a-plane src="wall.jpg" position="10 2.5 0" rotation="0 -90 0" width="20" height="5" repeat="4 1"></a-plane>
     <a-plane src="wall.jpg" position="0 2.5 10" rotation="0 180 0" width="20" height="5" repeat="4 1"></a-plane>
 
-    <!-- Moldura e texto na parede frontal -->
-    <a-entity position="0 2 -8.5">
-      <a-plane width="6" height="3" color="#111" material="shader: flat; side: double" shadow></a-plane>
-      <a-plane width="6.2" height="3.2" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.15"></a-plane>
-      <a-text value="Sandro Silva dos Santos" color="#00ffcc" align="center" width="5" position="0 1 0.05"></a-text>
-      <a-text value="Desenvolvedor de Sistemas | APIs | Mobile" color="#fff" align="center" width="5" position="0 0.5 0.05"></a-text>
-      <a-text value="PHP • Java • MySQL • Automações" color="#ccc" align="center" width="5" position="0 0 0.05"></a-text>
+    <!-- Parede frontal - Nome + Foto Perfil + Descrição curta -->
+    <a-entity position="0 2 -8.5" id="frontalPresentation">
+      <a-plane width="7" height="4" color="#111" material="shader: flat; side: double" shadow></a-plane>
+      <a-plane width="7.2" height="4.2" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.15"></a-plane>
+
+      <!-- Foto do GitHub -->
+      <a-image src="https://avatars.githubusercontent.com/u/22227370?v=4"
+               position="0 1 0.05"
+               width="1.8" height="1.8"
+               material="shader: flat" 
+               geometry="primitive: circle; radius: 0.9">
+      </a-image>
+
+      <!-- Nome -->
+      <a-text value="Sandro Silva dos Santos"
+              color="#00ffcc"
+              align="center"
+              width="5"
+              position="0 -0.2 0.05"
+              font="mozillavr"
+              shader="msdf">
+      </a-text>
+
+      <!-- Curta descrição -->
+      <a-text value="Desenvolvedor de Sistemas | APIs | Mobile\nPHP • Java • MySQL • Automações"
+              color="#ccc"
+              align="center"
+              width="6"
+              position="0 -0.7 0.05"
+              line-height="40"
+              font="mozillavr"
+              shader="msdf">
+      </a-text>
     </a-entity>
 
-    <!-- Moldura e texto na parede esquerda -->
-    <a-entity position="-8.5 2 0" rotation="0 90 0">
-      <a-plane width="6" height="3" color="#111" material="shader: flat; side: double" shadow></a-plane>
-      <a-plane width="6.2" height="3.2" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.15"></a-plane>
-      <a-text value="Sobre Mim" color="#00ffcc" align="center" width="5" position="0 1 0.05" font="mozillavr"></a-text>
-      <a-text value="Crio soluções digitais sob medida com foco em performance, segurança e automação." color="#fff" align="center" width="5" position="0 0.5 0.05" wrap-count="40"></a-text>
-      <a-text value="Uso PHP, Java e MySQL para sistemas robustos e integrados." color="#ccc" align="center" width="5" position="0 0 0.05" wrap-count="40"></a-text>
+    <!-- Parede esquerda - Sobre Mim -->
+    <a-entity position="-8.5 2 0" rotation="0 90 0" id="sobreMimPresentation">
+      <a-plane width="7" height="4" color="#111" material="shader: flat; side: double" shadow></a-plane>
+      <a-plane width="7.2" height="4.2" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.15"></a-plane>
+
+      <a-text value="Sobre Mim" color="#00ffcc" align="center" width="6" position="0 1.5 0.05" font="mozillavr"></a-text>
+
+      <a-text value="Crio soluções digitais sob medida com foco em performance,\nsegurança e automação, usando PHP, Java e MySQL para sistemas robustos e confiáveis."
+              color="#fff" align="center" width="6" position="0 0.5 0.05" line-height="40" font="mozillavr"></a-text>
     </a-entity>
 
-    <!-- Moldura e texto na parede direita -->
-    <a-entity position="8.5 2 0" rotation="0 -90 0">
-      <a-plane width="6" height="3" color="#111" material="shader: flat; side: double" shadow></a-plane>
-      <a-plane width="6.2" height="3.2" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.15"></a-plane>
-      <a-text value="Serviços" color="#00ffcc" align="center" width="5" position="0 1 0.05" font="mozillavr"></a-text>
+    <!-- Parede direita - Serviços -->
+    <a-entity position="8.5 2 0" rotation="0 -90 0" id="servicosPresentation">
+      <a-plane width="7" height="4" color="#111" material="shader: flat; side: double" shadow></a-plane>
+      <a-plane width="7.2" height="4.2" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.15"></a-plane>
+
+      <a-text value="Serviços" color="#00ffcc" align="center" width="6" position="0 1.5 0.05" font="mozillavr"></a-text>
+
       <a-text value="• Desenvolvimento de sistemas personalizados\n• APIs RESTful\n• Automações empresariais\n• Relatórios dinâmicos\n• Aplicativos mobile"
-              color="#fff" align="left" width="5" position="-2.3 0.5 0.05" line-height="40" wrap-count="30"></a-text>
+              color="#fff" align="left" width="5.5" position="-2.4 0.7 0.05" line-height="40" wrap-count="35"></a-text>
     </a-entity>
 
-    <!-- Moldura e texto na parede dos fundos -->
-    <a-entity position="0 2 8.5" rotation="0 180 0">
-      <a-plane width="6" height="3" color="#111" material="shader: flat; side: double" shadow></a-plane>
-      <a-plane width="6.2" height="3.2" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.15"></a-plane>
-      <a-text value="Contato" color="#00ffcc" align="center" width="5" position="0 1 0.05" font="mozillavr"></a-text>
+    <!-- Parede dos fundos - Contato -->
+    <a-entity position="0 2 8.5" rotation="0 180 0" id="contatoPresentation">
+      <a-plane width="7" height="4" color="#111" material="shader: flat; side: double" shadow></a-plane>
+      <a-plane width="7.2" height="4.2" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.15"></a-plane>
+
+      <a-text value="Contato" color="#00ffcc" align="center" width="6" position="0 1.5 0.05" font="mozillavr"></a-text>
+
       <a-text value="📱 WhatsApp: 91 99239-8394\n📧 Email: sandro.silva@example.com"
-              color="#fff" align="center" width="5" position="0 0.5 0.05" wrap-count="40"></a-text>
+              color="#fff" align="center" width="6" position="0 0.5 0.05" line-height="40" font="mozillavr"></a-text>
     </a-entity>
 
-    <!-- Foto perfil Github na parede esquerda, abaixo do texto -->
-    <a-image src="https://avatars.githubusercontent.com/u/22227370?v=4"
-             position="-8.5 0.7 0" rotation="0 90 0"
-             width="1.5" height="1.5" material="shader: flat">
-    </a-image>
-
-    <!-- Câmera e controles -->
+    <!-- Câmera + controles -->
     <a-entity id="cameraRig" position="0 1.6 0">
       <a-camera wasd-controls look-controls="magicWindowTrackingEnabled: true"></a-camera>
     </a-entity>
