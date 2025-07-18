@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sala VR 360º - Portfólio Sandro</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <style>
+      body, html {
+        margin: 0;
+        height: 100%;
+        background: #000;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene background="color: #000" vr-mode-ui>
+      <!-- Luz -->
+      <a-entity light="type: ambient; intensity: 0.7; color: #00ffff"></a-entity>
+
+      <!-- Sala -->
+      <a-box position="0 2 0" depth="8" height="4" width="8"
+             material="color: #111; side: double; shader: flat"></a-box>
+
+      <!-- Chão -->
+      <a-plane position="0 0 0" rotation="-90 0 0" width="8" height="8"
+               src="https://cdn.aframe.io/a-painter/images/floor.jpg" repeat="4 4"></a-plane>
+
+      <!-- Teto -->
+      <a-plane position="0 4 0" rotation="90 0 0" width="8" height="8" color="#002f2f"></a-plane>
+
+      <!-- ========== QUADROS AO REDOR ========== -->
+
+      <!-- FRENTE (Z negativo) -->
+      <a-plane position="0 2 -3.9" width="3.5" height="1.8" color="#003333" opacity="0.85">
+        <a-text value="Sandro Silva dos Santos\nDesenvolvedor de Sistemas, APIs e Mobile" 
+                 align="center" color="#00ffcc" position="0 0 0.01" width="3" font="mozillavr"></a-text>
+      </a-plane>
+
+      <!-- FUNDOS (Z positivo) -->
+      <a-plane position="0 2 3.9" rotation="0 180 0" width="3.5" height="2" color="#003333" opacity="0.85">
+        <a-text value="Contato:\n📱 WhatsApp: 91 99239-8394\n📧 Email: sandro.silva@example.com" 
+                 align="center" color="#00ffcc" position="0 0 0.01" width="3" font="mozillavr" line-height="40"></a-text>
+      </a-plane>
+
+      <!-- ESQUERDA (X negativo) -->
+      <a-plane position="-3.9 2 0" rotation="0 90 0" width="2.8" height="1.6" color="#003333" opacity="0.85">
+        <a-text value="Sobre Mim:\nCrio soluções digitais com PHP, Java e MySQL, focadas em performance e automação." 
+                 align="center" color="#00ffcc" position="0 0 0.01" width="2.6" font="mozillavr" line-height="40"></a-text>
+      </a-plane>
+
+      <!-- DIREITA (X positivo) -->
+      <a-plane position="3.9 2 0" rotation="0 -90 0" width="2.8" height="1.8" color="#003333" opacity="0.85">
+        <a-text value="Serviços:\n• Sistemas sob medida\n• APIs RESTful\n• Relatórios customizados\n• Aplicativos mobile\n• Integrações" 
+                 align="center" color="#00ffcc" position="0 0 0.01" width="2.5" font="mozillavr" line-height="35"></a-text>
+      </a-plane>
+
+      <!-- Projetos com imagens (cantos) -->
+      <a-plane position="-2 1.5 -3.8" rotation="0 10 0" width="1.8" height="1.2" color="#002222" opacity="0.9">
+        <a-image src="https://i.imgur.com/k4wD1Es.png" width="1.6" height="0.9" position="0 0 0.01"></a-image>
+        <a-text value="Sistema Web" position="0 -0.7 0.02" align="center" width="1.5" color="#00ffcc"></a-text>
+      </a-plane>
+
+      <a-plane position="2 1.5 -3.8" rotation="0 -10 0" width="1.8" height="1.2" color="#002222" opacity="0.9">
+        <a-image src="https://i.imgur.com/GyNwIIm.png" width="1.6" height="0.9" position="0 0 0.01"></a-image>
+        <a-text value="Java Backend" position="0 -0.7 0.02" align="center" width="1.5" color="#00ffcc"></a-text>
+      </a-plane>
+
+      <!-- Câmera -->
+      <a-entity id="cameraRig" position="0 1.6 0">
+        <a-camera look-controls wasd-controls="acceleration: 15">
+          <a-cursor></a-cursor>
+        </a-camera>
+      </a-entity>
+
+    </a-scene>
+  </body>
+</html>
