@@ -1,57 +1,65 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-  <meta charset="utf-8" />
-  <title>Sala VR - Portfólio Sandro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <style>
-    body { margin: 0; }
-  </style>
-</head>
-<body>
-  <a-scene background="color: #000">
-  
-    <!-- Câmera com sensores e movimento -->
-    <a-camera position="0 1.6 0" look-controls wasd-controls></a-camera>
-  
-    <!-- Iluminação -->
-    <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-    <a-entity light="type: point; intensity: 1" position="0 3 0"></a-entity>
-  
-    <!-- Piso e teto com textura -->
-    <a-plane src="floor.jpg" rotation="-90 0 0" width="10" height="10" repeat="4 4"></a-plane>
-    <a-plane src="floor.jpg" position="0 3 0" rotation="90 0 0" width="10" height="10"></a-plane>
-  
-    <!-- Parede frente: nome + foto de perfil -->
-    <a-plane src="wall.jpg" position="0 1.5 5" rotation="0 180 0" width="10" height="3">
-      <a-image src="https://avatars.githubusercontent.com/u/your_github_id?v=4"
-               position="0 0.5 0.1" width="1" height="1"></a-image>
-      <a-text value="Sandro Silva dos Santos" align="center" position="0 -0.2 0.1"
-              color="#00FFCC" width="4" font="mozillavr"></a-text>
-    </a-plane>
-  
-    <!-- Parede esquerda: Sobre Mim -->
-    <a-plane src="wall.jpg" position="-5 1.5 0" rotation="0 90 0" width="10" height="3">
-      <a-text value="Sobre Mim:\nCrio soluções digitais sob medida com foco em performance,\nsegurança e automação, usando PHP, Java e MySQL."
-              align="center" position="0 0 0.1" color="#00FFCC" width="4" font="mozillavr" line-height="40">
-      </a-text>
-    </a-plane>
-  
-    <!-- Parede direita: Serviços -->
-    <a-plane src="wall.jpg" position="5 1.5 0" rotation="0 -90 0" width="10" height="3">
-      <a-text value="Serviços:\n• Sistemas personalizados\n• APIs RESTful\n• Automações\n• Relatórios dinâmicos\n• Apps mobile"
-              align="center" position="0 0 0.1" color="#00FFCC" width="4" font="mozillavr" line-height="35">
-      </a-text>
-    </a-plane>
-  
-    <!-- Parede fundo: Contato -->
-    <a-plane src="wall.jpg" position="0 1.5 -5" rotation="0 0 0" width="10" height="3">
-      <a-text value="Contato:\n📱 WhatsApp: 91 99239-8394\n📧 Email: sandro.silva@example.com"
-              align="center" position="0 0 0.1" color="#00FFCC" width="4" font="mozillavr" line-height="40">
-      </a-text>
-    </a-plane>
-  
-  </a-scene>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Portfólio VR - Sandro Silva</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene vr-mode-ui="enabled: true" device-orientation-permission-ui="enabled: true">
+
+      <!-- Luzes -->
+      <a-entity light="type: ambient; intensity: 0.7"></a-entity>
+      <a-entity light="type: point; intensity: 0.9; distance: 50" position="2 4 4"></a-entity>
+
+      <!-- Chão com textura -->
+      <a-plane src="floor.jpg" rotation="-90 0 0" width="20" height="20" repeat="5 5"></a-plane>
+
+      <!-- Paredes com textura -->
+      <a-plane src="wall.jpg" position="0 2.5 -5" rotation="0 0 0" width="10" height="5"></a-plane>
+      <a-plane src="wall.jpg" position="-5 2.5 0" rotation="0 90 0" width="10" height="5"></a-plane>
+      <a-plane src="wall.jpg" position="5 2.5 0" rotation="0 -90 0" width="10" height="5"></a-plane>
+      <a-plane src="wall.jpg" position="0 2.5 5" rotation="0 180 0" width="10" height="5"></a-plane>
+
+      <!-- Moldura com apresentação -->
+      <a-entity position="0 2 -3">
+        <!-- Moldura base -->
+        <a-plane width="2.8" height="1.6" color="#111" material="shader: flat; side: double" shadow></a-plane>
+
+        <!-- Borda externa com efeito neon -->
+        <a-plane width="2.9" height="1.7" color="#00ffcc" position="0 0 -0.01" material="shader: flat; opacity: 0.2"></a-plane>
+
+        <!-- Textos do portfólio -->
+        <a-text value="Sandro Silva dos Santos" color="#00ffcc" align="center" width="2.5" position="0 0.6 0"></a-text>
+        <a-text value="Desenvolvedor de Sistemas | APIs | Mobile" color="#fff" align="center" width="2.4" position="0 0.3 0"></a-text>
+        <a-text value="PHP • Java • MySQL • Automações" color="#ccc" align="center" width="2.4" position="0 0 0"></a-text>
+        <a-text value="WhatsApp: 91 99239-8394" color="#aaa" align="center" width="2.4" position="0 -0.3 0"></a-text>
+        <a-text value="GitHub: github.com/sandrossantos" color="#888" align="center" width="2.4" position="0 -0.6 0"></a-text>
+      </a-entity>
+
+      <!-- Foto de perfil na parede lateral -->
+      <a-image 
+        src="https://avatars.githubusercontent.com/u/22227370?v=4" 
+        position="-2 2 -4.9" 
+        width="1.5" 
+        height="1.5" 
+        material="shader: flat" 
+        rotation="0 0 0">
+      </a-image>
+
+      <!-- Câmera e controle de movimentação -->
+      <a-entity id="cameraRig" position="0 1.6 0">
+        <a-camera wasd-controls look-controls="magicWindowTrackingEnabled: true"></a-camera>
+      </a-entity>
+
+    </a-scene>
+  </body>
 </html>
