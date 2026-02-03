@@ -167,8 +167,10 @@ def salvar_imagem_banco(imagem_base64, classificacao, app, tracker_id=None, conf
             # Sucesso
             success_msg = f"Sequência {sequencia} salva com sucesso"
             print(f"[SAVE SUCCESS] {success_msg}")
-            app.root.after(0, lambda s=sequencia, c=confidence, t=tracker_id: 
+            app.root.after(0, lambda s=sequencia, c=confidence, t=tracker_id, cls=classificacao: 
                           app.notify_save_result(True, f"Sequência {s}", t, confidence=c))
+            app.root.after(0, lambda s=sequencia, c=confidence, t=tracker_id, cls=classificacao:
+                          app.notify_saved_sequence(s, cls, t, c))
             return
             
         except sqlite3.IntegrityError as e:
@@ -215,6 +217,9 @@ class App:
         # Configurações ajustáveis
         self.confidence_threshold = tk.DoubleVar(value=CONFIDENCE_THRESHOLD)
         self.current_sequence_var = tk.StringVar(value="Aguardando...")
+        
+        # Histórico de sequências salvas (mantém últimas 20)
+        self.sequence_history = []  # Lista de dicts com info de cada sequência salva
         
         # Construir interface
         self.build_ui()
@@ -288,16 +293,16 @@ class App:
         self.stats_label = ttk.Label(left_panel, text="Objetos salvos: 0", anchor=tk.W)
         self.stats_label.pack(fill=tk.X)
         
-        # Painel direito (vídeo e log)
-        right_panel = ttk.Frame(main_frame)
-        right_panel.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # Painel central (vídeo e log)
+        center_panel = ttk.Frame(main_frame)
+        center_panel.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
         
         # Canvas para vídeo
-        self.canvas = tk.Canvas(right_panel, bg="black", width=800, height=600)
+        self.canvas = tk.Canvas(center_panel, bg="black", width=800, height=600)
         self.canvas.pack(fill=tk.BOTH, expand=True)
         
         # Log de eventos
-        log_frame = ttk.LabelFrame(right_panel, text="Log de Eventos", height=150)
+        log_frame = ttk.LabelFrame(center_panel, text="Log de Eventos", height=150)
         log_frame.pack(fill=tk.X, pady=(10, 0))
         log_frame.pack_propagate(False)
         
@@ -307,6 +312,44 @@ class App:
         scrollbar = ttk.Scrollbar(log_frame, command=self.log_text.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.log_text.config(yscrollcommand=scrollbar.set)
+        
+        # Painel direito (histórico de sequências)
+        right_panel = ttk.Frame(main_frame, width=300)
+        right_panel.pack(side=tk.LEFT, fill=tk.Y)
+        right_panel.pack_propagate(False)
+        
+        # Título do histórico
+        ttk.Label(right_panel, text="Histórico de Sequências", font=("Arial", 12, "bold")).pack(pady=10)
+        
+        # Frame para a Treeview e scrollbar
+        history_frame = ttk.Frame(right_panel)
+        history_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=(0, 5))
+        
+        # Scrollbar para o histórico
+        history_scrollbar = ttk.Scrollbar(history_frame)
+        history_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # Treeview para exibir histórico (últimas 20 sequências)
+        self.history_tree = ttk.Treeview(
+            history_frame,
+            columns=("seq", "class", "time", "details"),
+            show="headings",
+            yscrollcommand=history_scrollbar.set,
+            height=20
+        )
+        self.history_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        history_scrollbar.config(command=self.history_tree.yview)
+        
+        # Configurar colunas
+        self.history_tree.heading("seq", text="Seq")
+        self.history_tree.heading("class", text="Classe")
+        self.history_tree.heading("time", text="Hora")
+        self.history_tree.heading("details", text="Detalhes")
+        
+        self.history_tree.column("seq", width=50, anchor=tk.CENTER)
+        self.history_tree.column("class", width=80, anchor=tk.W)
+        self.history_tree.column("time", width=60, anchor=tk.CENTER)
+        self.history_tree.column("details", width=110, anchor=tk.W)
     
     def update_confidence_label(self, value):
         """Atualiza o label do slider de confiança."""
@@ -341,6 +384,58 @@ class App:
                 self.current_sequence_var.set(f"{NEXT_SEQUENCE_OVERRIDE}")
             else:
                 self.current_sequence_var.set("Auto (Max+1)")
+    
+    def append_sequence_history(self, seq, classificacao, tracker_id=None, confidence=None):
+        """
+        Adiciona uma nova entrada ao histórico de sequências.
+        Insere no topo e mantém apenas as últimas 20 entradas.
+        Thread-safe: deve ser chamado via root.after.
+        """
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        
+        # Preparar detalhes
+        details_parts = []
+        if tracker_id is not None:
+            details_parts.append(f"ID:{tracker_id}")
+        if confidence is not None:
+            details_parts.append(f"Conf:{confidence:.2f}")
+        details = " ".join(details_parts) if details_parts else "-"
+        
+        # Adicionar ao histórico em memória
+        entry = {
+            'seq': seq,
+            'classificacao': classificacao,
+            'timestamp': timestamp,
+            'tracker_id': tracker_id,
+            'confidence': confidence,
+            'details': details
+        }
+        self.sequence_history.insert(0, entry)
+        
+        # Limitar a 20 entradas
+        if len(self.sequence_history) > 20:
+            self.sequence_history = self.sequence_history[:20]
+        
+        # Atualizar UI - inserir no topo da Treeview
+        self.history_tree.insert(
+            "",
+            0,  # Inserir no topo (índice 0)
+            values=(seq, classificacao or "-", timestamp, details)
+        )
+        
+        # Remover entradas antigas se houver mais de 20
+        items = self.history_tree.get_children()
+        if len(items) > 20:
+            for item in items[20:]:
+                self.history_tree.delete(item)
+    
+    def notify_saved_sequence(self, seq, classificacao, tracker_id=None, confidence=None):
+        """
+        Notifica que uma sequência foi salva com sucesso.
+        Atualiza o histórico de sequências.
+        Deve ser chamado via root.after para thread-safety.
+        """
+        self.append_sequence_history(seq, classificacao, tracker_id, confidence)
     
     def log_message(self, message, level="info"):
         """Adiciona mensagem ao log com timestamp."""
