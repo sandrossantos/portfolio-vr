@@ -12,16 +12,16 @@ Aplicação de visão computacional para detecção e classificação de carcaç
 - ✅ Tratamento de erros de integridade (sequência duplicada)
 - ✅ Timeout configurável para operações de banco
 
-### 2. Sequência Inicial Ajustável
+### 2. Sequência Atual Ajustável
 - ✅ Variável global `NEXT_SEQUENCE_OVERRIDE` com proteção thread-safe (`NEXT_SEQ_LOCK`)
-- ✅ Função `set_next_sequence(n)` para definir sequência inicial
+- ✅ Função `set_next_sequence(n)` para definir sequência atual
 - ✅ Lógica em `get_proxima_sequencia()`:
   - Consulta `MAX(sequencia)` do banco
   - Se `NEXT_SEQUENCE_OVERRIDE` definido, usa `max(db_max+1, NEXT_SEQUENCE_OVERRIDE)`
   - Incrementa automaticamente para próxima sequência disponível
   - Thread-safe com lock
 - ✅ UI com Entry e botão "Definir Sequência"
-- ✅ Display da próxima sequência no painel esquerdo
+- ✅ Display da próxima sequência atual no painel esquerdo
 
 ### 3. Garantia de Gravação Única
 - ✅ Sistema `objects_passed` para rastrear IDs que já cruzaram
@@ -83,20 +83,20 @@ python carcacas_app.py
 **Painel Esquerdo:**
 - Botões Iniciar/Parar Captura
 - Slider de Limiar de Confiança (0.0 - 1.0)
-- Campo para definir Sequência Inicial
-- Display da próxima sequência
+- Campo para definir Sequência Atual
+- Display da próxima sequência atual
 - Estatísticas de objetos salvos
 
 **Painel Direito:**
 - Visualização de vídeo com linha de cruzamento
 - Log de eventos em tempo real
 
-### Definir Sequência Inicial
+### Definir Sequência Atual
 
-1. Digite o número desejado no campo "Sequência Inicial"
-2. Clique em "Definir"
-3. A próxima gravação usará essa sequência ou maior (se banco já tiver sequências maiores)
-4. Sequências subsequentes serão incrementadas automaticamente
+1. Digite o número desejado no campo "Sequência Atual"
+2. Clique em "Definir Sequência"
+3. A próxima gravação usará exatamente essa sequência (ou maior se o banco já tiver sequências maiores)
+4. Sequências subsequentes serão incrementadas automaticamente a partir desse valor
 
 ### Ajustar Confiança
 

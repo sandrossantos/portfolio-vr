@@ -68,8 +68,8 @@ y_pos -= 6
 ax_left.plot([1, 9], [y_pos, y_pos], 'k-', linewidth=1)
 y_pos -= 5
 
-# Sequência inicial
-ax_left.text(5, y_pos, 'Sequência Inicial:', ha='center', fontsize=9, fontweight='bold')
+# Sequência atual
+ax_left.text(5, y_pos, 'Sequência Atual:', ha='center', fontsize=9, fontweight='bold')
 y_pos -= 4
 entry_bg = FancyBboxPatch((1, y_pos-2), 4, 2.5, facecolor='white', 
                           edgecolor='black', linewidth=1)
@@ -79,12 +79,12 @@ ax_left.text(3, y_pos-0.5, '100', ha='center', va='center', fontsize=9)
 button3 = FancyBboxPatch((5.5, y_pos-2), 3.5, 2.5, boxstyle="round,pad=0.05", 
                          facecolor='#2196F3', edgecolor='black', linewidth=1)
 ax_left.add_patch(button3)
-ax_left.text(7.25, y_pos-0.5, 'Definir', ha='center', va='center', 
-             fontsize=9, color='white', fontweight='bold')
+ax_left.text(7.25, y_pos-0.5, 'Definir Sequência', ha='center', va='center', 
+             fontsize=8, color='white', fontweight='bold')
 y_pos -= 6
 
 # Display de sequência
-ax_left.text(1, y_pos, 'Próxima Sequência:', ha='left', fontsize=8)
+ax_left.text(1, y_pos, 'Próxima seq atual:', ha='left', fontsize=8)
 y_pos -= 3
 ax_left.text(1, y_pos, '101', ha='left', fontsize=11, fontweight='bold', color='blue')
 y_pos -= 6
@@ -149,7 +149,7 @@ log_messages = [
     ('[20:20:37] ✓ Salvo: Sequência 104 [ID: 109] (conf: 0.95)', 'green'),
     ('[20:20:38] Captura em andamento...', 'black'),
     ('[20:20:39] Objeto 110 detectado com confiança 0.82', 'blue'),
-    ('[20:20:40] ✓ Sequência inicial definida para 100', 'green'),
+    ('[20:20:40] ✓ Sequência atual definida para 100', 'green'),
 ]
 
 y_log = 26

@@ -122,7 +122,7 @@ def set_next_sequence(n):
                 raise ValueError("Sequência deve ser maior que 0")
             NEXT_SEQUENCE_OVERRIDE = n
             print(f"[SEQUENCE] Override definido para: {n}")
-            return True, f"Sequência inicial definida para {n}"
+            return True, f"Sequência atual definida para {n}"
         except ValueError as e:
             msg = f"Valor inválido: {e}"
             print(f"[SEQUENCE ERROR] {msg}")
@@ -266,7 +266,7 @@ class App:
         ttk.Separator(left_panel, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=10)
         
         # Controle de sequência
-        ttk.Label(left_panel, text="Sequência Inicial:", font=("Arial", 10, "bold")).pack(anchor=tk.W, pady=(10, 5))
+        ttk.Label(left_panel, text="Sequência Atual:", font=("Arial", 10, "bold")).pack(anchor=tk.W, pady=(10, 5))
         
         seq_frame = ttk.Frame(left_panel)
         seq_frame.pack(fill=tk.X, pady=5)
@@ -274,10 +274,10 @@ class App:
         self.sequence_entry = ttk.Entry(seq_frame, width=10)
         self.sequence_entry.pack(side=tk.LEFT, padx=(0, 5))
         
-        ttk.Button(seq_frame, text="Definir", command=self.set_sequence).pack(side=tk.LEFT)
+        ttk.Button(seq_frame, text="Definir Sequência", command=self.set_sequence).pack(side=tk.LEFT)
         
         # Display da sequência atual
-        ttk.Label(left_panel, text="Próxima Sequência:").pack(anchor=tk.W, pady=(15, 0))
+        ttk.Label(left_panel, text="Próxima seq atual:").pack(anchor=tk.W, pady=(15, 0))
         ttk.Label(left_panel, textvariable=self.current_sequence_var, 
                  font=("Arial", 12, "bold"), foreground="blue").pack(anchor=tk.W, pady=(0, 5))
         
