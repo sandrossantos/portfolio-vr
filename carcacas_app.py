@@ -134,7 +134,11 @@ def salvar_imagem_banco(imagem_base64, classificacao, app, tracker_id=None, conf
     Salva imagem no banco de dados com retry e notificação robusta.
     Executa validações e tenta reconectar em caso de erro.
     """
-    print(f"[SAVE] Iniciando salvamento - Classificação: {classificacao}, Tracker ID: {tracker_id}, Confidence: {confidence}")
+    # Obter preview da sequência antes de iniciar o salvamento
+    with NEXT_SEQ_LOCK:
+        seq_preview = NEXT_SEQUENCE_OVERRIDE if NEXT_SEQUENCE_OVERRIDE is not None else "Auto (Max+1)"
+    
+    print(f"[SAVE] Iniciando salvamento - Classificação: {classificacao}, Tracker ID: {tracker_id}, Confidence: {confidence}, Seq Preview: {seq_preview}")
     
     # Validação da imagem
     if not imagem_base64 or len(imagem_base64) < 100:
@@ -150,6 +154,7 @@ def salvar_imagem_banco(imagem_base64, classificacao, app, tracker_id=None, conf
             
             # Obter próxima sequência
             sequencia = get_proxima_sequencia()
+            print(f"[SAVE] Sequência obtida para salvamento: {sequencia}")
             
             # Conectar e inserir
             conn = sqlite3.connect(DB_PATH, timeout=10.0)
@@ -213,7 +218,6 @@ class App:
         self.next_temp_id = -1  # IDs temporários para objetos sem tracker
         
         # Configurações ajustáveis
-        self.confidence_threshold = tk.DoubleVar(value=CONFIDENCE_THRESHOLD)
         self.current_sequence_var = tk.StringVar(value="Aguardando...")
         
         # Construir interface
@@ -242,26 +246,6 @@ class App:
         
         self.stop_button = ttk.Button(left_panel, text="Parar Captura", command=self.stop_capture, state=tk.DISABLED)
         self.stop_button.pack(fill=tk.X, pady=5)
-        
-        ttk.Separator(left_panel, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=10)
-        
-        # Controle de confiança
-        ttk.Label(left_panel, text="Limiar de Confiança:").pack(anchor=tk.W, pady=(10, 0))
-        confidence_frame = ttk.Frame(left_panel)
-        confidence_frame.pack(fill=tk.X, pady=5)
-        
-        self.confidence_slider = ttk.Scale(
-            confidence_frame,
-            from_=0.0,
-            to=1.0,
-            orient=tk.HORIZONTAL,
-            variable=self.confidence_threshold,
-            command=self.update_confidence_label
-        )
-        self.confidence_slider.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        
-        self.confidence_label = ttk.Label(confidence_frame, text=f"{CONFIDENCE_THRESHOLD:.2f}")
-        self.confidence_label.pack(side=tk.RIGHT, padx=(5, 0))
         
         ttk.Separator(left_panel, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=10)
         
@@ -307,10 +291,6 @@ class App:
         scrollbar = ttk.Scrollbar(log_frame, command=self.log_text.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.log_text.config(yscrollcommand=scrollbar.set)
-    
-    def update_confidence_label(self, value):
-        """Atualiza o label do slider de confiança."""
-        self.confidence_label.config(text=f"{float(value):.2f}")
     
     def set_sequence(self):
         """Define a sequência inicial manualmente."""
@@ -445,7 +425,7 @@ class App:
                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
         
         # Adicionar informações
-        info_text = f"Frame: {frame_count} | Threshold: {self.confidence_threshold.get():.2f}"
+        info_text = f"Frame: {frame_count}"
         cv2.putText(frame, info_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
         
         return frame
@@ -491,7 +471,6 @@ class App:
         Implementa lógica de associação e deduplicação.
         """
         current_time = datetime.now()
-        confidence_threshold = self.confidence_threshold.get()
         
         for det in detections:
             tracker_id = det.get('tracker_id')
@@ -500,7 +479,7 @@ class App:
             obj_class = det['class']
             
             # Filtro de confiança
-            if confidence < confidence_threshold:
+            if confidence < CONFIDENCE_THRESHOLD:
                 continue
             
             # Calcular centro
